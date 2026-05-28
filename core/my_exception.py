@@ -1,0 +1,2 @@
+class InvokeException(Exception):
+    pass
