@@ -7,29 +7,19 @@ client = LLMMind(
     api_key=s.TEST_API_KEY,
     base_url=s.TEST_API_URL,
     max_tokens=3200,
-    provider="openai"
+    provider="openai",
 )
 
-from agent_type.react_agent import MyReActAgent
-from tools.build_in.terminal import TerminalTool
-from tools.base import tool
+# 直接测试 LLMMind
+msgs = [{"role": "user", "content": "你好，请用一句话介绍自己"}]
+print("invoke:", client.invoke(msgs))
 
-@tool("terminal")
-def terminal(cmd):
-    f'''
-    {TerminalTool().get_parameters()}
-    '''
-    tm = TerminalTool()
-    return tm.run({"command":cmd})
+# 测试流式
+print("stream:", end=" ")
+for chunk in client.stream_invoke(msgs):
+    print(chunk, end="")
+print()
 
-agent = MyReActAgent("search",client,[terminal])
-agent.run("当前目录有哪些文件")
-
-
-# from agents.plan_and_solve_agent import MyPlanAndSolveAgent
-# agent = MyPlanAndSolveAgent("test",client)
-# # agent.run("一个圆形花园的半径是8米，如果要在花园周围建一条宽2m的小径，小径的面积是多少")
-# from agents.reflect_agent import MyReflectionAgent
-# agent = MyReflectionAgent("反思助手",client)
-# result = agent.run("写一篇关于人工智能发展历程的简短文章")
-# print(f"最终结果: {result}")
+# 测试 chat_json
+msgs2 = [{"role": "user", "content": "以JSON格式回复: {\"name\": \"AI助手\", \"version\": \"1.0\"}"}]
+print("chat_json:", client.chat_json(msgs2))
