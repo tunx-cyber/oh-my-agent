@@ -4,7 +4,7 @@ def _invoke_with_tools(self, messages: list[dict[str, Any]], tools: list[dict[st
         """调用底层OpenAI客户端执行函数调用"""
         client = getattr(self.llm, "_client", None)
         if client is None:
-            raise RuntimeError("HelloAgentsLLM 未正确初始化客户端，无法执行函数调用。")
+            raise RuntimeError("Agents未正确初始化客户端，无法执行函数调用。")
 
         client_kwargs = dict(kwargs)
         client_kwargs.setdefault("temperature", self.llm.temperature)
